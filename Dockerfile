@@ -1,17 +1,25 @@
 FROM php:8.2-fpm
 
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_NO_INTERACTION 1
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    libonig-dev \
+    libxml2-dev \
+    npm
 
-RUN apt-get update
-RUN apt-get -y install libzip-dev
-RUN docker-php-ext-install zip pdo_mysql
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-COPY . .
+WORKDIR /var/www
 
-RUN composer update
-RUN composer install
+COPY . /var/www
 
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0"]
+RUN composer install --optimize-autoloader
+
+RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www/storage
