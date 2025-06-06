@@ -1,16 +1,32 @@
 #!/bin/bash
 set -e
 
-export PORT=${PORT:-80}
+# MySQLの初期化
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "Initializing MySQL database..."
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
+fi
 
-# nginx confを環境変数から生成
-envsubst '$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
-
-# MySQL初期セットアップ（必要ならカスタマイズ）
+# MySQLの起動と初期設定
 service mysql start
+sleep 5
 
-# PHP-FPM起動
-service php8.2-fpm start
+# Laravel環境設定
+if [ ! -f ".env" ]; then
+    cp .env.example .env
+    php artisan key:generate
+fi
 
-# Nginxサーバー起動
-/usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisor.conf
+# データベースのマイグレーション
+php artisan migrate --force || true
+
+# nginxの設定をテンプレートから生成（必要に応じて）
+if [ -f "/etc/nginx/conf.d/default.conf.template" ]; then
+    envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
+fi
+
+# MySQLを停止（supervisordで管理するため）
+service mysql stop
+
+# supervisordを起動
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
