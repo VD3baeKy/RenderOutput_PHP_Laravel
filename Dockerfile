@@ -3,69 +3,72 @@ FROM debian:bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
-# 1. 必要なベースパッケージ＋init-fake（公式リポジトリ外なのでdpkg手動導入）
-RUN apt-get update && \
-    apt-get install -y wget curl git unzip zip gnupg2 supervisor ca-certificates apt-transport-https lsb-release && \
-    wget https://github.com/chesty/init-fake/releases/download/v2.1.0/init-fake_2.1.0_amd64.deb && \
-    dpkg -i init-fake_2.1.0_amd64.deb && \
-    rm init-fake_2.1.0_amd64.deb && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# 2. nginx のインストール
-RUN apt-get update && \
-    apt-get install -y nginx && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# 3. PHP + npm（必要に応じてバージョン指定を追加してください）
+# すべてのパッケージを一度にインストール（レイヤー削減）
 RUN apt-get update && \
     apt-get install -y \
+      wget curl git unzip zip gnupg2 supervisor ca-certificates \
+      apt-transport-https lsb-release nginx \
       php php-fpm php-cli php-mysql php-mbstring php-xml \
-      php-curl php-zip php-gd php-bcmath php-intl \
-      npm \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+      php-curl php-zip php-gd php-bcmath php-intl npm && \
+    # tiniをインストール（プロセス管理の改善）
+    wget -O /usr/bin/tini https://github.com/krallin/tini/releases/download/v0.19.0/tini && \
+    chmod +x /usr/bin/tini && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 4. MySQL自動起動抑止
-RUN echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d
-
-# 5. MySQL用のランディレクトリ作成
-RUN mkdir -p /var/run/mysqld
-
-# 6. MySQLインストール（rootパスワード: root）
-RUN apt-get update && \
+# MySQLの自動起動を抑止してインストール
+RUN echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d && \
+    mkdir -p /var/run/mysqld && \
+    apt-get update && \
     echo "mysql-server mysql-server/root_password password root" | debconf-set-selections && \
     echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections && \
     apt-get install -y mysql-server && \
+    rm /usr/sbin/policy-rc.d && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 7. policy-rc.d を削除（不要になったら）
-RUN rm /usr/sbin/policy-rc.d
-
-# 8. Composerインストール
+# Composerをインストール
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 9. PHP-FPMをTCPリッスンに切替
+# PHP-FPMをTCPリッスンに切替
 RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /etc/php/*/fpm/pool.d/www.conf
 
-# 10. 各種設定ファイル・エントリポイントのコピー
+# 作業ディレクトリの設定
+WORKDIR /var/www/html
+
+# アプリケーションファイルをコピー（.dockerignoreを適切に設定してください）
+COPY . /var/www/html
+
+# 各種設定ファイル・エントリポイントのコピー
 COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# 11. Laravel app配置
-WORKDIR /var/www/html
-COPY . /var/www/html
+# Laravel依存関係のインストールと最適化
+RUN composer install --no-dev --optimize-autoloader && \
+    npm install && \
+    npm run production || true
 
-# 12. Laravel composerパッケージ＆npmパッケージインストール
-RUN composer install --no-dev --optimize-autoloader || true
-RUN npm install || true
+# Laravelのストレージ/キャッシュディレクトリの準備と権限設定
+RUN mkdir -p /var/www/html/storage/app/public \
+    /var/www/html/storage/framework/cache \
+    /var/www/html/storage/framework/sessions \
+    /var/www/html/storage/framework/views \
+    /var/www/html/storage/logs \
+    /var/www/html/bootstrap/cache && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 13. Laravelのストレージ/キャッシュ権限調整
-RUN mkdir -p /var/www/html/bootstrap/cache \
- && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
- && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache
+# Laravelの最適化（本番環境用）
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache || true
 
-# 14. 必要ポート公開
+# 必要ポートの公開
 EXPOSE 80 3306
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost/ || exit 1
+
+# tiniを使用したエントリポイント
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
