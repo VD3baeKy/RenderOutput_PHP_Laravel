@@ -1,11 +1,9 @@
 server {
-    listen ${PORT};
+    listen 80;
     server_name localhost;
     root /var/www/html/public;
-    index index.php index.html;
 
-    server_tokens off;
-    more_clear_headers Server;
+    index index.php index.html;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -14,12 +12,11 @@ server {
     location ~ \.php$ {
         fastcgi_pass 127.0.0.1:9000;
         fastcgi_index index.php;
-        include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
     }
 
-    location ~ /\.ht {
+    location ~ /\.(?!well-known).* {
         deny all;
     }
 }
-
