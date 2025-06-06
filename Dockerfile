@@ -22,12 +22,20 @@ RUN add-apt-repository ppa:ondrej/php -y && \
       npm \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# ---- ここから修正！MySQL自動起動抑止 ----
+# MySQLのインストール前に policy-rc.d を設置（自動起動をブロック）
+RUN echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d
+
 # MySQL（rootパスワード: root）
 RUN apt-get update && \
     echo "mysql-server-8.0 mysql-server/root_password password root" | debconf-set-selections && \
     echo "mysql-server-8.0 mysql-server/root_password_again password root" | debconf-set-selections && \
     apt-get install -y mysql-server && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+# ---- ここまで修正 ----
+
+# インストール後に不要になった policy-rc.d を削除（お好みで）
+RUN rm /usr/sbin/policy-rc.d
 
 # composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
