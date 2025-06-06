@@ -19,6 +19,11 @@ RUN apt-get update && \
       supervisor && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# 1.5 fake-inits対応をインストール（これを追加！）
+RUN apt-get update && \
+    apt-get install -y init-fake && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # 2. nginx-extras のインストール
 RUN apt-get update && \
     apt-get install -y nginx-extras && \
