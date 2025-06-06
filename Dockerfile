@@ -22,9 +22,12 @@ RUN add-apt-repository ppa:ondrej/php -y && \
       npm \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# ---- ここから修正！MySQL自動起動抑止 ----
-# MySQLのインストール前に policy-rc.d を設置（自動起動をブロック）
+# ---- ここから修正！MySQL自動起動抑止＆runディレクトリ作成 ----
+# MySQL自動起動抑止
 RUN echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d
+
+# /var/run/mysqldディレクトリを作成（MySQLのインストール前に必要）
+RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
 
 # MySQL（rootパスワード: root）
 RUN apt-get update && \
