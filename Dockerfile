@@ -1,16 +1,25 @@
-FROM debian:bullseye
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 
-# すべてのパッケージを一度にインストール（レイヤー削減）
+# タイムゾーンの設定
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# すべてのパッケージを一度にインストール
 RUN apt-get update && \
     apt-get install -y \
+      software-properties-common \
       wget curl git unzip zip gnupg2 supervisor ca-certificates \
       apt-transport-https lsb-release nginx \
-      php php-fpm php-cli php-mysql php-mbstring php-xml \
-      php-curl php-zip php-gd php-bcmath php-intl npm && \
-    # tiniをインストール（プロセス管理の改善）
+      npm && \
+    # PHP 7.4リポジトリを追加
+    add-apt-repository ppa:ondrej/php && \
+    apt-get update && \
+    apt-get install -y \
+      php7.4 php7.4-fpm php7.4-cli php7.4-mysql php7.4-mbstring php7.4-xml \
+      php7.4-curl php7.4-zip php7.4-gd php7.4-bcmath php7.4-intl && \
+    # tiniをインストール
     wget -O /usr/bin/tini https://github.com/krallin/tini/releases/download/v0.19.0/tini && \
     chmod +x /usr/bin/tini && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -29,12 +38,12 @@ RUN echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/pol
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # PHP-FPMをTCPリッスンに切替
-RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /etc/php/*/fpm/pool.d/www.conf
+RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /etc/php/7.4/fpm/pool.d/www.conf
 
 # 作業ディレクトリの設定
 WORKDIR /var/www/html
 
-# アプリケーションファイルをコピー（.dockerignoreを適切に設定してください）
+# アプリケーションファイルをコピー
 COPY . /var/www/html
 
 # 各種設定ファイル・エントリポイントのコピー
@@ -62,6 +71,9 @@ RUN mkdir -p /var/www/html/storage/app/public \
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache || true
+
+# nginxのデフォルトサイトを削除
+RUN rm -f /etc/nginx/sites-enabled/default
 
 # 必要ポートの公開
 EXPOSE 80 3306
