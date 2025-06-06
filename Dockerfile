@@ -23,3 +23,8 @@ COPY . /var/www
 RUN composer install --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www/storage
+
+RUN mkdir -p /var/www/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
+
