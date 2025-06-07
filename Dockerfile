@@ -123,6 +123,17 @@ RUN rm -f /etc/nginx/sites-enabled/default
 #EXPOSE 80 3306
 EXPOSE 80
 
+# デバッグ用のRUNコマンド (一時的に追加)
+RUN echo "--- Debugging Nginx config ---" && \
+    nginx -t || true && \
+    echo "--- Listing Supervisor config ---" && \
+    cat /etc/supervisor/conf.d/supervisor.conf || true && \
+    echo "--- Checking Nginx process (will fail as not running) ---" && \
+    ps aux | grep nginx || true && \
+    echo "--- Checking MariaDB process (will fail as not running) ---" && \
+    ps aux | grep mysql || true && \
+    echo "--- Debugging complete ---"
+    
 # エントリポイント
 # Supervisorを使ってNginx, PHP-FPM, MariaDBを起動するように docker-entrypoint.sh を設定します。
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
