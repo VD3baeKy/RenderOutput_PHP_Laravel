@@ -5,41 +5,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    # Dockerfileでファイルをコピーしているため、開発中のコード変更を反映するにはvolumesをマウントします。
+    # 本番デプロイの場合はvolumesを削除し、COPYでイメージに焼き付けたコードを使用する方が一般的です。
     volumes:
-      - .:/var/www
-    expose:
-      - 9000  # PHP-FPM
-    depends_on:
-      - db
-    environment:
-      - DB_HOST=db
-      - DB_DATABASE=laravel
-      - DB_USERNAME=laraveluser
-      - DB_PASSWORD=laravelpass
-
-  web:
-    image: nginx:alpine
+      - .:/var/www/html 
+    # ホストの8080ポートをコンテナの80ポートに、ホストの3306ポートをコンテナの3306ポートにマッピング
     ports:
       - "${PORT:-8080}:80"
-    volumes:
-      - .:/var/www
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-
-  db:
-    image: mysql:8.0
-    restart: always
+      - "3306:3306" 
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laraveluser
-      MYSQL_PASSWORD: laravelpass
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+      # DB_HOSTはlocalhostまたは127.0.0.1を設定
+      - DB_HOST=127.0.0.1 
+      - DB_DATABASE=${DB_DATABASE:-laravel}
+      - DB_USERNAME=${DB_USERNAME:-laraveluser}
+      - DB_PASSWORD=${DB_PASSWORD:-laravelpass}
+      - APP_KEY=${APP_KEY}
+      - APP_ENV=${APP_ENV:-local}
+      - APP_DEBUG=${APP_DEBUG:-true}
 
-volumes:
-  db_data:
-  
+# webサービスとdbサービスはDockerfile内で全て賄われるため削除
+
+# volumesは不要（db_dataも不要）
+# volumes:
+#   db_data:
