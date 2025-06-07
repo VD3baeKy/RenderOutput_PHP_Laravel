@@ -58,6 +58,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 # MariaDBをインストール
+# MariaDBのサービスが自動起動しないようにするポリシーを一時的に設定し、インストール後に削除
 RUN apt-get update && \
     echo '#!/bin/sh\nexit 101' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d && \
     apt-get install -y --no-install-recommends mariadb-server && \
@@ -79,15 +80,18 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');" && \
     composer --version
 
-# PHP-FPMをTCPリッスンに切替
+# PHP-FPMをTCPリッスンに切替 (Nginxが同じコンテナ内にあるため、localhostで通信可能)
 RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /etc/php/8.2/fpm/pool.d/www.conf
 
 # 作業ディレクトリの設定
 WORKDIR /var/www/html
 
 # 設定ファイルを先にコピー
-COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf.template
+# nginxの設定ファイルは、コンテナ内でNginxが正しくLaravelのpublicディレクトリを指すように調整が必要です。
+COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf
+# supervisorの設定ファイルも忘れずに
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+# エントリポイントスクリプト
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
@@ -112,12 +116,12 @@ RUN mkdir -p storage/app/public \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 755 storage bootstrap/cache
 
-# nginxのデフォルトサイトを削除
+# nginxのデフォルトサイトを削除 (これで新しい設定が有効になります)
 RUN rm -f /etc/nginx/sites-enabled/default
 
-# 必要ポートの公開
-EXPOSE 80
-#EXPOSE 80 3306
+# 必要ポートの公開 (NginxがHTTPリクエストを処理し、データベースも同じコンテナ内なので3306も公開)
+EXPOSE 80 3306
 
 # エントリポイント
+# Supervisorを使ってNginx, PHP-FPM, MariaDBを起動するように docker-entrypoint.sh を設定します。
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
