@@ -116,7 +116,8 @@ RUN mkdir -p storage/app/public \
 RUN rm -f /etc/nginx/sites-enabled/default
 
 # 必要ポートの公開
-EXPOSE 80 3306
+EXPOSE 80
+#EXPOSE 80 3306
 
 # エントリポイント
 ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
