@@ -11,7 +11,7 @@ services:
       - .:/var/www/html 
     # ホストの8080ポートをコンテナの80ポートに、ホストの3306ポートをコンテナの3306ポートにマッピング
     ports:
-      - "${PORT:-8080}:80"
+      - "${PORT:-80}:80"
       - "3306:3306" 
     environment:
       # DB_HOSTはlocalhostまたは127.0.0.1を設定
@@ -19,7 +19,7 @@ services:
       - DB_DATABASE=${DB_DATABASE:-laravel}
       - DB_USERNAME=${DB_USERNAME:-laraveluser}
       - DB_PASSWORD=${DB_PASSWORD:-laravelpass}
-      - APP_KEY=${APP_KEY}
+      - APP_KEY=${APP_KEY:-123456}
       - APP_ENV=${APP_ENV:-local}
       - APP_DEBUG=${APP_DEBUG:-true}
 
