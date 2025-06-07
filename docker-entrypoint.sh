@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 # MariaDBの初期設定（初回起動時のみ実行）
 # /var/lib/mysql/mysql が存在しない場合、つまりデータディレクトリが空の場合に初期化を実行
