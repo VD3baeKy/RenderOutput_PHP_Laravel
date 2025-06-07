@@ -120,7 +120,8 @@ RUN mkdir -p storage/app/public \
 RUN rm -f /etc/nginx/sites-enabled/default
 
 # 必要ポートの公開 (NginxがHTTPリクエストを処理し、データベースも同じコンテナ内なので3306も公開)
-EXPOSE 80 3306
+#EXPOSE 80 3306
+EXPOSE 80
 
 # エントリポイント
 # Supervisorを使ってNginx, PHP-FPM, MariaDBを起動するように docker-entrypoint.sh を設定します。
