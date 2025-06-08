@@ -1,44 +1,29 @@
-version: '3.8'
+name: Build and Push to Docker Hub
 
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
-    environment:
-      - DB_HOST=db
-      - DB_DATABASE=laravel
-      - DB_USERNAME=laravel
-      - DB_PASSWORD=secret
-    depends_on:
-      - db
+on:
+  workflow_dispatch:
 
-  web:
-    image: nginx:alpine
-    ports:
-      - "${PORT:-8080}:80"  # Back4App・Render対応
-    volumes:
-      - .:/var/www/html
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
 
-  db:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: rootpw
-    ports:
-      - "3306:3306"
-    volumes:
-      - dbdata:/var/lib/mysql
+    steps:
+      # 1. リポジトリのソースコードをチェックアウトする
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-volumes:
-  dbdata:
-  
+      # 2. Docker Hubにログインする
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. Dockerイメージをビルドして、Docker Hubにプッシュする
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/renderoutput_php_laravel:latest
