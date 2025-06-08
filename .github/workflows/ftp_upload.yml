@@ -1,0 +1,68 @@
+# ワークフロー名
+name: Manual FTP Deploy
+
+# ワークフローのトリガー設定
+on:
+  # workflow_dispatch を設定すると、手動で実行できるようになる。
+  workflow_dispatch:
+    # 手動実行時にUIに表示される入力フィールド
+    inputs:
+      source-dir:
+        description: 'アップロードするローカルディレクトリ (例: ./dist)'
+        required: true
+        default: './'
+      remote-dir:
+        description: 'アップロード先のリモートディレクトリ (例: /public_html/my-project/)'
+        required: true
+        default: '/'
+
+jobs:
+  # deployという名前のジョブ
+  deploy:
+    # ubuntuの最新版仮想環境で実行
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. リポジトリのソースコードをチェックアウトする
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. (任意) ビルドが必要な場合、ここにビルドステップを追加
+      # 例: Node.jsプロジェクトでビルドする場合
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18'
+      # - name: Install dependencies
+      #   run: npm install
+      # - name: Build project
+      #   run: npm run build
+
+      # 3. FTPでファイルをアップロードする
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          # FTPサーバーのホスト名。
+          server: ${{ secrets.FTP_SERVER }}
+          
+          # FTPユーザー名。
+          username: ${{ secrets.FTP_USERNAME }}
+          
+          # FTPパスワード。
+          password: ${{ secrets.FTP_PASSWORD }}
+          
+          # (任意) ポート番号（デフォルトは21）
+          # port: 21
+          
+          # (任意) FTPSを使用する場合はtrueに設定
+          # protocol: ftps
+          
+          # アップロードするローカルのディレクトリ。手動実行時の入力値を使用。
+          local-dir: ${{ github.event.inputs.source-dir }}
+          
+          # アップロード先のリモートディレクトリ。手動実行時の入力値を使用。
+          server-dir: ${{ github.event.inputs.remote-dir }}
+          
+          # (任意) アップロード前にリモートのファイルを削除する
+          # dangerous-clean-slate: true
+          
