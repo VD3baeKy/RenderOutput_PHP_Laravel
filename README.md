@@ -41,4 +41,8 @@ composer install
  
 
 ## 5. Laravel WEBアプリ 起動画面
-![image](https://github.com/user-attachments/assets/b2a01e47-01c1-4906-99eb-7f35f9528ce9)
+![image](https://github.com/user-attachments/assets/96df4fe0-e7b0-4d19-a5ff-c4c5265185bb) 
+ 
+
+
+
