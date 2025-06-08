@@ -17,7 +17,7 @@ Demonstration Site
 * Laravelアプリは、```/htdocs```ディレクトリへ配置する。
  
 
-## 3. 
+## 3.  ```app_key```
 * ```app_key```が設定されていない場合、設定する。 
 
 ![image](https://github.com/user-attachments/assets/074ff161-0ab1-47b1-b7e1-418561c6b32f)
