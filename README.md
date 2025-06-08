@@ -21,10 +21,18 @@ Demonstration Site
 * ```/public/build/manifest.json```ファイルを確認する。
 * ```/public/build/manifest.json```ファイルがある場合は、アクセス権限を確認する。
 * ```/public/build/manifest.json```ファイルがない場合は、```/build```ディレクトリを```/public```ディレクトリへ配置する。
-* もしも、```/build```ディレクトリがない場合は、```npm run build```して作成する。
+* もしも、```/build```ディレクトリがない場合は、**プロジェクトのルートディレクトリ**でアセットをビルド（```npm run build```）して作成する。
 
 ![image](https://github.com/user-attachments/assets/52730a92-69dd-4f96-a71b-32bdeaf8577f) 
+
+
+### ※ ```vendor```ディレクトリ、```autoload.php```
+* **プロジェクトのルートディレクトリ**で```composer install```を実行して依存関係をインストールすると作成される。
+``` bash
+composer install
+```
  
+
 
 ## 4.  ```app_key```
 * ```app_key```が設定されていない場合、```.env```ファイルへ設定する。 
