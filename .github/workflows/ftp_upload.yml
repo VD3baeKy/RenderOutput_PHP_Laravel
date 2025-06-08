@@ -1,5 +1,5 @@
 # ワークフロー名
-name: Manual FTP Deploy
+name: Manual FTP Upload
 
 # ワークフローのトリガー設定
 on:
