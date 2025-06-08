@@ -7,8 +7,8 @@
 
         <div class="text-red-600">
             動作確認用アカウント<br>
-            メールアドレス：test@example.com<br>
-            パスワード：samurai1234
+            メールアドレス：taro.samurai@example.com<br>
+            パスワード：password
         </div>
 
         <!-- Email Address -->
