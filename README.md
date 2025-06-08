@@ -17,9 +17,20 @@ Demonstration Site
 * Laravelアプリは、```/htdocs```ディレクトリへ配置する。
  
 
-## 3.  ```app_key```
-* ```app_key```が設定されていない場合、設定する。 
+## 3. ```Vite manifest not found at: ./public/build/manifest.json```エラー
+* ```/public/build/manifest.json```ファイルを確認する。
+* ```/public/build/manifest.json```ファイルがある場合は、アクセス権限を確認する。
+* ```/public/build/manifest.json```ファイルがない場合は、```/build```ディレクトリを```/public```ディレクトリへ配置する。
+* もしも、```/build```ディレクトリがない場合は、```npm run build```して作成する。
 
-![image](https://github.com/user-attachments/assets/074ff161-0ab1-47b1-b7e1-418561c6b32f)
+![image](https://github.com/user-attachments/assets/52730a92-69dd-4f96-a71b-32bdeaf8577f) 
+ 
 
+## 4.  ```app_key```
+* ```app_key```が設定されていない場合、```.env```ファイルへ設定する。 
 
+![image](https://github.com/user-attachments/assets/074ff161-0ab1-47b1-b7e1-418561c6b32f) 
+ 
+
+## 5. Laravel WEBアプリ 起動画面
+![image](https://github.com/user-attachments/assets/b2a01e47-01c1-4906-99eb-7f35f9528ce9)
