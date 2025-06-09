@@ -22,9 +22,9 @@ COPY --from=builder /app/vendor/ /app/vendor/
 COPY . .
 
 # 必要なディレクトリを作成し、適切な権限を設定
-RUN mkdir -p /app/bootstrap/cache && \
-    chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-RUN php artisan route:cache && php artisan view:cache
+#RUN mkdir -p /app/bootstrap/cache && \
+#    chown -R www-data:www-data /app/storage /app/bootstrap/cache
+#
+#RUN php artisan route:cache && php artisan view:cache
 
 CMD ["php-fpm"]
