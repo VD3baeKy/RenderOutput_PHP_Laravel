@@ -64,6 +64,13 @@ composer install
 
 ---
 ## 5-5. Laravel WEBアプリ 「投稿アプリ」 ：投稿詳細ページ
-![image](https://github.com/user-attachments/assets/8bce2139-519c-458b-ae08-b78cd4a66874)
+![image](https://github.com/user-attachments/assets/8bce2139-519c-458b-ae08-b78cd4a66874) 
+
+---
+## 6. Class Hierarchy
+![image](https://github.com/user-attachments/assets/d8b99183-5695-4025-ac9f-a20fcd5355fe) 
+ 
+
+
 
 
