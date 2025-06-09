@@ -10,6 +10,10 @@
 * This Repository
     - https://github.com/VD3baeKy/RenderOutput_PHP_Laravel.git
 
+* API Document, Class Hierarchy
+    - https://vd3baeky.github.io/RenderOutput_PHP_Laravel/annotated.html
+    - https://vd3baeky.github.io/RenderOutput_PHP_Laravel/inherits.html
+
 ---
 ## 1. Laravel をインストールする
 
