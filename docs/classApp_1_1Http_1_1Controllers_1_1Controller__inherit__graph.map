@@ -1,0 +1,27 @@
+<map id="App\Http\Controllers\Controller" name="App\Http\Controllers\Controller">
+<area shape="rect" id="Node000001" title=" " alt="" coords="172,356,327,396"/>
+<area shape="rect" id="Node000003" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1AuthenticatedSessionController.html" title=" " alt="" coords="375,5,640,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="251,342,261,281,282,203,298,163,318,123,343,87,373,55,390,43,393,48,376,59,347,90,323,126,303,165,287,205,266,282,256,343"/>
+<area shape="rect" id="Node000004" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1ConfirmablePasswordController.html" title=" " alt="" coords="375,69,639,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="255,342,269,292,292,232,326,171,348,143,373,119,392,107,395,112,376,123,352,147,330,174,296,234,274,294,260,343"/>
+<area shape="rect" id="Node000005" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1EmailVerificationNotificationController.html" title=" " alt="" coords="385,134,630,189"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="263,342,281,308,305,269,336,231,373,198,392,187,395,191,376,202,340,234,310,272,285,311,268,345"/>
+<area shape="rect" id="Node000006" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1EmailVerificationPromptController.html" title=" " alt="" coords="399,213,616,267"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="280,344,323,310,373,278,402,265,404,270,376,282,326,314,284,349"/>
+<area shape="rect" id="Node000007" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1NewPasswordController.html" title=" " alt="" coords="400,292,615,332"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="339,350,374,341,422,329,424,335,375,347,340,355"/>
+<area shape="rect" id="Node000008" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1PasswordController.html" title=" " alt="" coords="415,356,600,396"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="340,373,414,373,414,379,340,379"/>
+<area shape="rect" id="Node000009" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1PasswordResetLinkController.html" title=" " alt="" coords="383,420,632,460"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="340,397,375,405,424,417,422,423,374,411,339,402"/>
+<area shape="rect" id="Node000010" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1RegisteredUserController.html" title=" " alt="" coords="395,484,619,524"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="283,404,325,438,376,470,406,481,404,486,373,474,322,443,280,408"/>
+<area shape="rect" id="Node000011" href="$classApp_1_1Http_1_1Controllers_1_1Auth_1_1VerifyEmailController.html" title=" " alt="" coords="408,548,607,588"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="269,407,312,472,342,506,376,534,409,550,407,554,373,538,338,510,308,475,265,410"/>
+<area shape="rect" id="Node000012" href="$classApp_1_1Http_1_1Controllers_1_1PostController.html" title=" " alt="" coords="430,612,585,652"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="262,408,278,452,301,504,334,555,354,578,376,598,402,613,431,622,429,627,400,617,373,602,350,582,330,558,297,506,273,454,257,410"/>
+<area shape="rect" id="Node000013" href="$classApp_1_1Http_1_1Controllers_1_1ProfileController.html" title=" " alt="" coords="430,676,585,716"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="258,409,270,465,292,533,307,569,326,603,349,635,376,662,402,678,431,687,429,692,400,682,373,666,345,638,322,606,302,571,287,535,264,466,253,410"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,363,124,389"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,373,172,373,172,379,138,379"/>
+</map>
