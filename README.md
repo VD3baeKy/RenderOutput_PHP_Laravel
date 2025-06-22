@@ -2,7 +2,7 @@
  
 
 * Demonstration Site 
-    - https://vd3baeky.infinityfreeapp.com/
+    - https://vd3baeky.infinityfreeapp.com/1/public/
 
 * Docker-Hub : vd3baeky/renderoutput_php_laravel
     - https://hub.docker.com/v2/namespaces/vd3baeky/repositories/renderoutput_php_laravel/tags
