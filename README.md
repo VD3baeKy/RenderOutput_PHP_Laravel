@@ -1,6 +1,6 @@
 # PHP Laravelフレームワーク 「投稿アプリ」 
 
-* ポートフォリオ　プレゼンテーション
+* ポートフォリオ　プレゼンテーション資料
     - https://www.docswell.com/s/VD3baeKy/KM71V8-2025-06-23-081505/1
 
 * Demonstration Site 
